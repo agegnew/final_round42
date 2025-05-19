@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
-import { User, Subject, getUsers, getSubjects, addSampleSubjects } from "@/lib/supabase";
+import { Subject, getUsers, getSubjects, addSampleSubjects } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SupabaseSetupChecker } from "@/components/supabase-setup-checker";
 
-interface User {
+interface UserData {
   id: string;
   email: string;
   created_at: string;
@@ -19,7 +19,7 @@ interface ApiError {
 }
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserData[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
@@ -35,11 +35,11 @@ export default function UsersPage() {
         const userResult = await getUsers();
         
         if (userResult.success && userResult.data) {
-          setUsers(userResult.data as User[]);
+          setUsers(userResult.data as UserData[]);
           setError(null);
           setErrorDetails(null);
         } else {
-          const errorObj = userResult.error as any;
+          const errorObj = userResult.error as { message?: string; code?: string };
           setError({
             message: "Failed to load users. Please try again.",
             status: 500

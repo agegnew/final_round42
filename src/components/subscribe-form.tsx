@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { addUser } from "@/lib/supabase";
 
 interface SubscribeResponse {
   error?: {
