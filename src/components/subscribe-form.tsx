@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { addUser } from "@/lib/supabase";
 
+interface SubscribeResponse {
+  error?: {
+    message: string;
+    status: number;
+  };
+  success?: boolean;
+}
+
 export function SubscribeForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -27,41 +35,25 @@ export function SubscribeForm() {
     setStatus("loading");
     
     try {
-      const result = await addUser(email);
-      
-      if (result.success) {
-        setStatus("success");
-        setMessage("Thank you for subscribing!");
-        setEmail("");
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data: SubscribeResponse = await response.json();
+
+      if (data.error) {
+        setStatus("error");
+        setMessage(data.error.message);
       } else {
-        const error = result.error as any;
-        
-        // Log the full error for debugging
-        console.log("Detailed error information:", error);
-        
-        // Check if it's a duplicate email error
-        if (error && error.code === "23505") {
-          setStatus("error");
-          setMessage("This email is already subscribed");
-        } else if (error && error.message && error.message.includes("table")) {
-          setStatus("error");
-          setMessage("Database setup issue. Please check if the 'users' table exists.");
-          setDetailedError(JSON.stringify(error, null, 2));
-        } else {
-          setStatus("error");
-          setMessage("An error occurred. Please try again.");
-          if (error && error.message) {
-            setDetailedError(error.message);
-          }
-        }
+        setStatus("success");
+        setMessage("Thanks for subscribing!");
+        setEmail("");
       }
     } catch (error) {
       setStatus("error");
-      setMessage("An error occurred. Please try again.");
-      console.error("Catch block error:", error);
-      if (error instanceof Error) {
-        setDetailedError(error.message);
-      }
+      setMessage(error instanceof Error ? error.message : "An error occurred");
     }
   };
 

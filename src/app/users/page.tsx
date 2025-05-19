@@ -7,11 +7,22 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SupabaseSetupChecker } from "@/components/supabase-setup-checker";
 
+interface User {
+  id: string;
+  email: string;
+  created_at: string;
+}
+
+interface ApiError {
+  message: string;
+  status: number;
+}
+
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [subjectsError, setSubjectsError] = useState<string | null>(null);
 
@@ -29,12 +40,18 @@ export default function UsersPage() {
           setErrorDetails(null);
         } else {
           const errorObj = userResult.error as any;
-          setError("Failed to load users. Please try again.");
+          setError({
+            message: "Failed to load users. Please try again.",
+            status: 500
+          });
           
           if (errorObj) {
             // Check if it's a table not found error
             if (errorObj.message && errorObj.message.includes('does not exist')) {
-              setError("The users table doesn't exist in your Supabase database.");
+              setError({
+                message: "The users table doesn't exist in your Supabase database.",
+                status: 500
+              });
             }
             
             setErrorDetails(
@@ -55,7 +72,10 @@ export default function UsersPage() {
           setSubjectsError("Failed to load subjects.");
         }
       } catch (err) {
-        setError("An error occurred while fetching users.");
+        setError({
+          message: "An error occurred while fetching users.",
+          status: 500
+        });
         setErrorDetails(err instanceof Error ? err.message : 'Unknown error');
         console.error(err);
       } finally {
@@ -86,7 +106,7 @@ export default function UsersPage() {
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600">
-            <p className="font-medium">{error}</p>
+            <p className="font-medium">{error.message}</p>
             
             {errorDetails && (
               <details className="mt-2">

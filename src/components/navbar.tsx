@@ -1,95 +1,92 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { FaDiscord } from 'react-icons/fa';
+import { RiTeamFill } from 'react-icons/ri';
+import { BsTrophyFill } from 'react-icons/bs';
+import { ThemeSwitcher } from './theme-switcher';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
 
   return (
-    <header
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white shadow-sm"
-          : "bg-white"
+        scrolled ? 'bg-slate-950/80 backdrop-blur-md' : 'bg-transparent'
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between h-20 px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl font-bold">
-            <span className="text-[#FFA500]">Edu</span>
-            <span className="text-[#333333]">Learn</span>
-          </span>
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-8">
-          <Link
-            href="/"
-            className="text-sm font-medium text-gray-600 hover:text-[#FFA500] transition-colors"
-          >
-            Find Sub
-          </Link>
-          <Link
-            href="#"
-            className="text-sm font-medium text-gray-600 hover:text-[#FFA500] transition-colors"
-          >
-            For School
-          </Link>
-          <Link
-            href="#"
-            className="text-sm font-medium text-gray-600 hover:text-[#FFA500] transition-colors"
-          >
-            Resource
-          </Link>
-          <Link
-            href="#"
-            className="text-sm font-medium text-gray-600 hover:text-[#FFA500] transition-colors"
-          >
-            About Us
-          </Link>
-          <Link
-            href="/users"
-            className="text-sm font-medium text-gray-600 hover:text-[#FFA500] transition-colors"
-          >
-            User List
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <Link href="/users">
-            <Button
-              size="sm"
-              className="bg-[#2D9979] text-white hover:bg-[#238b6d] rounded-full px-6 mr-2"
+      <div className="max-w-[2000px] mx-auto px-6 lg:px-12">
+        <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400"
             >
-              User List
-            </Button>
+              Coalition
+            </motion.div>
           </Link>
-          <Button
-            size="sm"
-            className="bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 rounded-full px-6"
-          >
-            Make Appointment
-          </Button>
-          <Button 
-            variant="outline" 
-            size="icon"
-            className="md:hidden border-0"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-          </Button>
+
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <NavLink href="/teams" icon={<RiTeamFill />}>Teams</NavLink>
+            <NavLink href="/leaderboard" icon={<BsTrophyFill />}>Leaderboard</NavLink>
+            <NavLink href="/discord" icon={<FaDiscord />}>Discord</NavLink>
+          </nav>
+
+          {/* Right Section */}
+          <div className="flex items-center space-x-4">
+            <ThemeSwitcher />
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="hidden md:flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 text-white text-sm font-medium shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 transition-all duration-300"
+            >
+              Connect
+            </motion.button>
+
+            {/* Mobile Menu Button */}
+            <button className="md:hidden p-2 rounded-lg hover:bg-slate-800/50 transition-colors">
+              <svg className="w-6 h-6 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </header>
+    </motion.header>
+  );
+}
+
+function NavLink({ href, children, icon }: { href: string; children: React.ReactNode; icon: React.ReactNode }) {
+  return (
+    <Link href={href}>
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="flex items-center space-x-1 text-slate-300 hover:text-white transition-colors"
+      >
+        <span className="text-violet-400">{icon}</span>
+        <span>{children}</span>
+      </motion.div>
+    </Link>
   );
 } 

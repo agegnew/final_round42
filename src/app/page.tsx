@@ -4,8 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FaDiscord, FaTrophy, FaStar, FaFire, FaCrown, FaMedal } from "react-icons/fa";
-import { BsArrowRight, BsTrophyFill, BsLightningCharge } from "react-icons/bs";
+import { BsArrowRight } from "react-icons/bs";
 import React from "react";
+import dynamic from 'next/dynamic';
+
+// Dynamically import the LeaderboardGlobe component with no SSR
+const LeaderboardGlobe = dynamic(
+  () => import('@/components/3d/LeaderboardGlobe'),
+  { ssr: false }
+);
 
 interface Team {
   name: string;
@@ -156,101 +163,95 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 text-slate-200">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-200">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.03]"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-950"></div>
-        
-        {/* Animated particles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full"
-              initial={{
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                scale: Math.random() * 0.5 + 0.5,
-                opacity: Math.random() * 0.5 + 0.25,
-              }}
-              animate={{
-                y: [null, Math.random() * -100],
-                opacity: [null, 0],
-              }}
-              transition={{
-                repeat: Infinity,
-                duration: Math.random() * 10 + 10,
-                ease: "linear",
-              }}
-            />
-          ))}
+      <section className="relative min-h-[90vh] w-screen overflow-hidden">
+        {/* Background Elements - Full Screen */}
+        <div className="fixed inset-0 w-screen h-screen">
+          {/* Grid overlay */}
+          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(to_bottom,white,transparent)] opacity-[0.02] w-screen h-screen"></div>
+          
+          {/* 3D Globe background */}
+          <div className="absolute inset-0 opacity-40 w-screen h-screen">
+            <LeaderboardGlobe />
+          </div>
+          
+          {/* Gradient overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-transparent to-slate-950/80"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/50 via-transparent to-slate-950/50"></div>
         </div>
         
-        {/* Content */}
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="mb-8"
-            >
-              <div className="inline-block p-2 px-4 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm font-medium">
-                <span className="flex items-center gap-2">
-                  <FaFire className="text-orange-400" />
-                  Live Competition
-                </span>
+        {/* Content Container */}
+        <div className="relative z-10 h-full flex items-center">
+          <div className="w-full max-w-[2000px] mx-auto px-6 lg:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              {/* Text Content - Left Side */}
+              <div className="order-2 lg:order-1 lg:pl-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-left"
+                >
+                  <motion.div
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                    className="mb-8"
+                  >
+                    <div className="inline-block p-2 px-4 rounded-full bg-gradient-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/20 backdrop-blur-sm text-violet-300 text-sm font-medium shadow-[0_0_15px_rgba(167,139,250,0.1)]">
+                      <span className="flex items-center gap-2">
+                        <FaFire className="text-orange-400" />
+                        Live Competition
+                      </span>
+                    </div>
+                  </motion.div>
+
+                  <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-purple-400 to-violet-400 animate-gradient">
+                    Coalition Arena
+                  </h1>
+                  <h2 className="text-2xl md:text-3xl font-light mb-8 text-slate-300">
+                    Rise Through the Ranks
+                  </h2>
+                  <p className="text-xl text-slate-400 mb-12">
+                    Live XP Battles. Daily Glory. One Champion.
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(167, 139, 250, 0.5)" }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-medium shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 transition-all duration-300 group backdrop-blur-sm"
+                  >
+                    <span className="flex items-center gap-2">
+                      View Leaderboard
+                      <BsArrowRight className="group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </motion.button>
+                </motion.div>
               </div>
-            </motion.div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400">
-              Coalition Arena
-            </h1>
-            <h2 className="text-2xl md:text-3xl font-light mb-8 text-slate-300">
-              Rise Through the Ranks
-            </h2>
-            <p className="text-xl text-slate-400 mb-12">
-              Live XP Battles. Daily Glory. One Champion.
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(167, 139, 250, 0.5)" }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-medium shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 transition-all duration-300 group"
-            >
-              <span className="flex items-center gap-2">
-                View Leaderboard
-                <BsArrowRight className="group-hover:translate-x-1 transition-transform" />
-              </span>
-            </motion.button>
-          </motion.div>
+              {/* Hero Image - Right Side */}
+              <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.7 }}
+                  className="relative w-full max-w-[600px]"
+                >
+                  <Image
+                    src="/hero-collation.png"
+                    alt="Team Mascots"
+                    width={800}
+                    height={600}
+                    className="object-contain"
+                    priority
+                  />
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-violet-500/20 blur-3xl -z-10"></div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="w-6 h-10 border-2 border-slate-400 rounded-full flex justify-center"
-          >
-            <motion.div
-              animate={{ y: [0, 12, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-1 h-2 bg-slate-400 rounded-full mt-2"
-            />
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* Live Coalition Dashboard */}
@@ -262,7 +263,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold mb-4">Live Coalition Dashboard</h2>
+            <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400">Live Coalition Dashboard</h2>
             <p className="text-slate-400">Real-time competition tracking and team performance</p>
           </motion.div>
 
@@ -275,25 +276,26 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className={`bg-gradient-to-br ${team.color} p-6 rounded-xl border ${team.borderColor} shadow-lg relative overflow-hidden group cursor-pointer`}
+                className={`bg-gradient-to-br ${team.color} p-6 rounded-2xl border ${team.borderColor} shadow-lg relative overflow-hidden group cursor-pointer backdrop-blur-sm`}
                 onClick={() => setActiveTeam(team)}
               >
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-16 h-16 relative">
+                      <div className="absolute inset-0 bg-white/10 rounded-xl backdrop-blur-sm"></div>
                       <Image
                         src={team.logo}
                         alt={`${team.name} logo`}
                         fill
-                        className="object-contain"
+                        className="object-contain p-2"
                       />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="text-xl font-bold">{team.name}</h3>
                         {team.rank === 1 && (
-                          <FaCrown className="text-yellow-400" />
+                          <FaCrown className="text-yellow-400 animate-pulse" />
                         )}
                       </div>
                       <p className="text-sm opacity-80">Score: {team.score}</p>
@@ -304,7 +306,7 @@ export default function Home() {
                       <span className="text-sm">XP Bonus</span>
                       <span className="font-bold">+{team.xpBonus}%</span>
                     </div>
-                    <div className="w-full bg-black/30 rounded-full h-2">
+                    <div className="w-full bg-black/30 rounded-full h-2 backdrop-blur-sm">
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${team.questProgress}%` }}
@@ -329,7 +331,7 @@ export default function Home() {
       </section>
 
       {/* Daily/Weekly Quests Panel */}
-      <section className="py-20 bg-slate-900/50 relative overflow-hidden">
+      <section className="py-20 bg-slate-900/50 relative overflow-hidden backdrop-blur-sm">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02]"></div>
         
@@ -340,7 +342,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold mb-4">Active Quests</h2>
+            <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400">Active Quests</h2>
             <p className="text-slate-400">Complete challenges to earn XP and climb the ranks</p>
           </motion.div>
 
@@ -353,11 +355,11 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-slate-800/30 p-6 rounded-2xl border border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-slate-700/50">
+                    <div className="p-2 rounded-xl bg-slate-700/50 backdrop-blur-sm">
                       {quest.icon}
                     </div>
                     <div>
@@ -365,7 +367,7 @@ export default function Home() {
                       <p className="text-slate-400">{quest.description}</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-sm bg-violet-500/20 text-violet-300">
+                  <span className="px-3 py-1 rounded-full text-sm bg-violet-500/20 text-violet-300 backdrop-blur-sm">
                     {quest.xp} XP
                   </span>
                 </div>
@@ -374,7 +376,7 @@ export default function Home() {
                     <span>Progress</span>
                     <span>{quest.progress}%</span>
                   </div>
-                  <div className="w-full bg-slate-700/50 rounded-full h-2">
+                  <div className="w-full bg-slate-700/50 rounded-full h-2 backdrop-blur-sm">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${quest.progress}%` }}
@@ -409,7 +411,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold mb-4">Top Performers</h2>
+            <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400">Top Performers</h2>
             <p className="text-slate-400">Meet the champions leading the competition</p>
           </motion.div>
 
@@ -422,10 +424,11 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className="bg-slate-800/30 p-6 rounded-xl border border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-slate-800/30 p-6 rounded-2xl border border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="relative w-16 h-16">
+                    <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-full backdrop-blur-sm"></div>
                     <Image
                       src={performer.avatar}
                       alt={performer.name}
@@ -448,7 +451,7 @@ export default function Home() {
                     {performer.achievements.map((achievement, i) => (
                       <span
                         key={i}
-                        className="px-2 py-1 text-xs rounded-full bg-violet-500/20 text-violet-300"
+                        className="px-2 py-1 text-xs rounded-full bg-violet-500/20 text-violet-300 backdrop-blur-sm"
                       >
                         {achievement}
                       </span>
@@ -462,7 +465,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-800 py-12 relative overflow-hidden">
+      <footer className="bg-slate-950/50 border-t border-slate-800/50 py-12 relative overflow-hidden backdrop-blur-sm">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02]"></div>
         
@@ -599,7 +602,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-slate-800 text-center text-slate-400">
+          <div className="mt-12 pt-8 border-t border-slate-800/50 text-center text-slate-400">
             <p>© 2024 Coalition Arena. All rights reserved.</p>
           </div>
         </div>
@@ -619,16 +622,17 @@ export default function Home() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className={`bg-gradient-to-br ${activeTeam.color} p-8 rounded-xl border ${activeTeam.borderColor} shadow-2xl max-w-lg w-full`}
+              className={`bg-gradient-to-br ${activeTeam.color} p-8 rounded-2xl border ${activeTeam.borderColor} shadow-2xl max-w-lg w-full backdrop-blur-sm`}
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-20 h-20 relative">
+                  <div className="absolute inset-0 bg-white/10 rounded-xl backdrop-blur-sm"></div>
                   <Image
                     src={activeTeam.logo}
                     alt={`${activeTeam.name} logo`}
                     fill
-                    className="object-contain"
+                    className="object-contain p-2"
                   />
                 </div>
                 <div>
@@ -637,7 +641,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="space-y-4">
-                <div className="bg-black/20 p-4 rounded-lg">
+                <div className="bg-black/20 p-4 rounded-xl backdrop-blur-sm">
                   <h4 className="font-bold mb-2">Team Stats</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -659,7 +663,7 @@ export default function Home() {
                   </div>
                 </div>
                 <button
-                  className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+                  className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors backdrop-blur-sm"
                   onClick={() => setActiveTeam(null)}
                 >
                   Close

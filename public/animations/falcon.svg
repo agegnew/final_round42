@@ -1,0 +1,37 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes wingFlap {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(-20deg); }
+    }
+    @keyframes featherRipple {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .wing { transform-origin: 50% 50%; animation: wingFlap 4s ease-in-out infinite; }
+    .feather { animation: featherRipple 2s ease-in-out infinite; }
+  </style>
+  
+  <g class="falcon">
+    <!-- Body -->
+    <path d="M100 80 C 120 80, 140 100, 140 120 C 140 140, 120 160, 100 160 C 80 160, 60 140, 60 120 C 60 100, 80 80, 100 80" 
+          fill="#94A3B8" />
+    
+    <!-- Wings -->
+    <g class="wing">
+      <path d="M100 100 C 60 90, 40 70, 30 50 C 20 30, 30 20, 50 30 C 70 40, 90 60, 100 100" 
+            fill="#94A3B8" class="feather" />
+      <path d="M100 100 C 140 90, 160 70, 170 50 C 180 30, 170 20, 150 30 C 130 40, 110 60, 100 100" 
+            fill="#94A3B8" class="feather" />
+    </g>
+    
+    <!-- Head -->
+    <circle cx="100" cy="70" r="15" fill="#94A3B8" />
+    
+    <!-- Beak -->
+    <path d="M100 60 L 120 50 L 100 70" fill="#64748B" />
+    
+    <!-- Eyes -->
+    <circle cx="95" cy="65" r="3" fill="#1E293B" />
+  </g>
+</svg> 
