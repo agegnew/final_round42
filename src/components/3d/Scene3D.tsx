@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Environment, Float } from "@react-three/drei";
-import { FloatingBook } from "./FloatingBook";
+import FloatingBook from "./FloatingBook";
 import { FloatingSphere } from "./FloatingSphere";
 
 export function Scene3D() {

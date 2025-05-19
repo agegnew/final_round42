@@ -439,7 +439,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <p className="text-slate-300 italic">"{performer.quote}"</p>
+                  <p className="text-slate-300 italic">&ldquo;{performer.quote}&rdquo;</p>
                   <div className="flex items-center gap-2 text-yellow-400">
                     <FaStar />
                     <span className="font-bold">{performer.xp} XP</span>

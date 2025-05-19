@@ -20,9 +20,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
-          attribute="class"
           defaultTheme="dark"
-          enableSystem={false}
           storageKey="coalition-theme"
         >
           <Navbar />

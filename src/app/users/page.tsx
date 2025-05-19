@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
-import { Subject, getUsers, getSubjects, addSampleSubjects } from "@/lib/supabase";
+import { getUsers, getSubjects, addSampleSubjects, type Subject } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SupabaseSetupChecker } from "@/components/supabase-setup-checker";
@@ -19,9 +19,15 @@ interface ApiError {
   details?: unknown;
 }
 
-interface ApiResponse {
+interface UserApiResponse {
   success: boolean;
   data?: UserData[];
+  error?: ApiError;
+}
+
+interface SubjectApiResponse {
+  success: boolean;
+  data?: Subject[];
   error?: ApiError;
 }
 
@@ -39,51 +45,36 @@ export default function UsersPage() {
       
       try {
         // Load users
-        const userResult = await getUsers();
+        const userResult = await getUsers() as UserApiResponse;
         
         if (userResult.success && userResult.data) {
-          setUsers(userResult.data as UserData[]);
+          setUsers(userResult.data);
           setError(null);
           setErrorDetails(null);
-        } else {
-          const errorObj = userResult.error as { message?: string; code?: string };
-          setError({
-            message: "Failed to load users. Please try again.",
-            status: 500
-          });
-          
-          if (errorObj) {
-            // Check if it's a table not found error
-            if (errorObj.message && errorObj.message.includes('does not exist')) {
-              setError({
-                message: "The users table doesn't exist in your Supabase database.",
-                status: 500
-              });
-            }
-            
-            setErrorDetails(
-              typeof errorObj === 'object' 
-                ? JSON.stringify(errorObj, null, 2) 
-                : String(errorObj)
-            );
-          }
+        } else if (userResult.error) {
+          setError(userResult.error);
+          setErrorDetails(
+            typeof userResult.error.details === 'object' 
+              ? JSON.stringify(userResult.error.details, null, 2) 
+              : String(userResult.error.details)
+          );
         }
 
         // Load subjects and add sample data if needed
         await addSampleSubjects();
-        const subjectResult = await getSubjects();
+        const subjectResult = await getSubjects() as SubjectApiResponse;
         
         if (subjectResult.success && subjectResult.data) {
-          setSubjects(subjectResult.data as Subject[]);
-        } else {
-          setSubjectsError("Failed to load subjects.");
+          setSubjects(subjectResult.data);
+        } else if (subjectResult.error) {
+          setSubjectsError(subjectResult.error.message);
         }
       } catch (err) {
         setError({
           message: "An error occurred while fetching users.",
-          status: 500
+          status: 500,
+          details: err instanceof Error ? err.message : 'Unknown error'
         });
-        setErrorDetails(err instanceof Error ? err.message : 'Unknown error');
         console.error(err);
       } finally {
         setLoading(false);
