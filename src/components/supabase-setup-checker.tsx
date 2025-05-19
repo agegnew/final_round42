@@ -22,8 +22,12 @@ export function SupabaseSetupChecker() {
       let connectionResult;
       try {
         connectionResult = await supabase.from('_unused_').select('*').limit(1);
-      } catch {
-        connectionResult = { data: null, error: { message: 'Connection failed' } };
+      } catch (error) {
+        setStatus('error');
+        setMessage('Failed to connect to Supabase. Please check your environment variables and API credentials.');
+        setDetails(error instanceof Error ? error.message : 'Unknown error');
+        setChecking(false);
+        return;
       }
       
       const { error: connectionError } = connectionResult;
@@ -33,7 +37,7 @@ export function SupabaseSetupChecker() {
         setMessage('Supabase connection successful. Checking users table...');
       } else if (connectionError) {
         setStatus('error');
-        setMessage('Failed to connect to Supabase. Check your API credentials.');
+        setMessage('Failed to connect to Supabase. Please check your environment variables and API credentials.');
         setDetails(JSON.stringify(connectionError, null, 2));
         setChecking(false);
         return;
@@ -45,7 +49,17 @@ export function SupabaseSetupChecker() {
       if (tableError && tableError.message && tableError.message.includes('does not exist')) {
         setStatus('error');
         setMessage('The "users" table does not exist in your Supabase database.');
-        setDetails('You need to create a table named "users" with columns: id (UUID, primary key), email (varchar, unique), created_at (timestamp with timezone)');
+        setDetails(`
+You need to create a table named "users" with columns:
+- id (UUID, primary key)
+- email (varchar, unique)
+- created_at (timestamp with timezone)
+
+You can create it by:
+1. Going to your Supabase dashboard
+2. SQL Editor
+3. Running the SQL from src/lib/create-table.sql
+        `);
         setShowSetupForm(true);
       } else if (tableError) {
         setStatus('error');
@@ -57,7 +71,7 @@ export function SupabaseSetupChecker() {
       }
     } catch (error) {
       setStatus('error');
-      setMessage('An unexpected error occurred');
+      setMessage('An unexpected error occurred while checking Supabase setup');
       setDetails(error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setChecking(false);

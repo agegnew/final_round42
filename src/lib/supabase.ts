@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // These environment variables will need to be set in .env.local
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://senbmfhlnzzjhgsletqk.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbmJtZmhsbnp6amhnc2xldHFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYxOTY2ODAsImV4cCI6MjAzMTc3MjY4MH0.PNqE7-35vgQNLlkjJqSJK0YVoFz-JWHmYVCnA8NGe6Y';
 
 // Log if URL is not set (debug purpose)
 if (!supabaseUrl || !supabaseAnonKey) {

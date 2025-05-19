@@ -52,7 +52,11 @@ export default function UsersPage() {
           setError(null);
           setErrorDetails(null);
         } else if (userResult.error) {
-          setError(userResult.error);
+          setError({
+            message: userResult.error.message || "Failed to load users. Please check your Supabase configuration.",
+            status: userResult.error.status || 500,
+            details: userResult.error.details
+          });
           setErrorDetails(
             typeof userResult.error.details === 'object' 
               ? JSON.stringify(userResult.error.details, null, 2) 
@@ -61,17 +65,22 @@ export default function UsersPage() {
         }
 
         // Load subjects and add sample data if needed
-        await addSampleSubjects();
-        const subjectResult = await getSubjects() as SubjectApiResponse;
-        
-        if (subjectResult.success && subjectResult.data) {
-          setSubjects(subjectResult.data);
-        } else if (subjectResult.error) {
-          setSubjectsError(subjectResult.error.message);
+        try {
+          await addSampleSubjects();
+          const subjectResult = await getSubjects() as SubjectApiResponse;
+          
+          if (subjectResult.success && subjectResult.data) {
+            setSubjects(subjectResult.data);
+          } else if (subjectResult.error) {
+            setSubjectsError(subjectResult.error.message || "Failed to load subjects.");
+          }
+        } catch (subjectError) {
+          setSubjectsError("Failed to load or create subjects. Please check your Supabase configuration.");
+          console.error("Subject loading error:", subjectError);
         }
       } catch (err) {
         setError({
-          message: "An error occurred while fetching users.",
+          message: "An error occurred while connecting to Supabase. Please check your configuration.",
           status: 500,
           details: err instanceof Error ? err.message : 'Unknown error'
         });
