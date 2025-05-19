@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FaDiscord, FaTrophy, FaStar, FaFire, FaCrown, FaMedal, FaBolt } from "react-icons/fa";
-import { BsArrowRight } from "react-icons/bs";
-import React from "react";
+import { BsArrowRight } from "react-icons/bs";import React from "react";
 import dynamic from 'next/dynamic';
 
 // Dynamically import the LeaderboardGlobe component with no SSR
@@ -213,7 +212,7 @@ export default function Home() {
                   <h2 className="text-2xl md:text-3xl font-light mb-8 text-slate-300">
                     Rise Through the Ranks
                   </h2>
-                                    <p className="text-xl text-slate-400 mb-12">                    Live XP Battles. Daily Glory. One Champion.                  </p>
+                                    <p className="text-xl text-slate-400 mb-12">Live XP Battles. Daily Glory. One Champion.</p>
                   <motion.button
                     whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(167, 139, 250, 0.5)" }}
                     whileTap={{ scale: 0.95 }}

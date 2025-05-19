@@ -16,6 +16,13 @@ interface UserData {
 interface ApiError {
   message: string;
   status: number;
+  details?: unknown;
+}
+
+interface ApiResponse {
+  success: boolean;
+  data?: UserData[];
+  error?: ApiError;
 }
 
 export default function UsersPage() {
